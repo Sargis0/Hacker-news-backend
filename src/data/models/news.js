@@ -24,6 +24,9 @@ const newsSchema = new Schema({
         type: Number,
         default: 0,
     }
-}, {timestamps: true});
+}, {
+    timestamps: true,
+    strict: true,
+});
 
 export default model("News", newsSchema);

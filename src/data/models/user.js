@@ -12,6 +12,9 @@ const userSchema = new Schema({
         required: true,
         trim: true,
     }
-}, {timestamps: true});
+}, {
+    timestamps: true,
+    strict: true,
+});
 
 export default model("User", userSchema);

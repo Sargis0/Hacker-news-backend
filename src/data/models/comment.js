@@ -25,6 +25,9 @@ const commentSchema = new Schema({
         type: Date,
         default: Date.now,
     }
-}, {timestamps: true});
+}, {
+    timestamps: true,
+    strict: true,
+});
 
 export default model("Comment", commentSchema);

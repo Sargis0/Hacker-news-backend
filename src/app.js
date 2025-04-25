@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import http from "node:http";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import {MongoClient} from "./infrastructures/config/Database.js";
 import authRouter from "./presentation/routes/authRouter.js";
@@ -22,6 +23,7 @@ class App {
             methods: ["POST", "GET", "PUT", "PATCH", "DELETE"]
         }));
         this.expressApp.use(express.json());
+        this.expressApp.use(cookieParser())
         this.expressApp.use("/api", authRouter);
     }
 
