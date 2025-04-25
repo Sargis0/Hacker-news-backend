@@ -62,6 +62,37 @@ class AuthController {
             })
         }
     }
+
+    async addEmail(request, response) {
+        try {
+            const {id} = request.params;
+            const {email} = request.body;
+
+            if (!email) {
+                return response.status(400).json(
+                    new ResponseDto({
+                        success: false,
+                        message: "Email is required"
+                    })
+                );
+            }
+            let result = await authService.addEmail(id, email);
+
+
+            return response.status(200).json(
+                new ResponseDto({
+                    success: true,
+                    message: "Email added successfully",
+                    data: result
+                })
+            );
+        } catch (error) {
+            return response.status(500).json({
+                success: false,
+                message: error.message
+            })
+        }
+    }
 }
 
 export default new AuthController();

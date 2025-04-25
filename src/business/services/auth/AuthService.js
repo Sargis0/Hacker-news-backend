@@ -38,6 +38,20 @@ class AuthService {
     async logout(refreshToken) {
         return await tokenService.removeToken(refreshToken)
     }
+
+    async addEmail(id, email) {
+        const emailExists = await authRepository.emailExists(email);
+        if (email) {
+            throw {message: "Email already in use"}
+        }
+
+        const updatedUser = await authRepository.addEmail(id, email);
+        if (!updatedUser) {
+            throw {message: "User not found"};
+        }
+
+        return new UserDto(updatedUser);
+    }
 }
 
 export default new AuthService();
