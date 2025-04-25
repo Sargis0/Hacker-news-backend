@@ -8,7 +8,7 @@ class TokenService {
         return {accessToken, refreshToken}
     }
 
-    async validateAccessToken(token) {
+    validateAccessToken(token) {
         try {
             return jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
         } catch {
