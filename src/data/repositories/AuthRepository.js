@@ -20,6 +20,9 @@ class AuthRepository {
     async emailExists(email) {
         return UserModel.findOne({email});
     }
-}
 
+    async findUserById(userId) {
+        return UserModel.findById(userId);
+    }
+}
 export default new AuthRepository();

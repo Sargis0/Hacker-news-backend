@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 
 import {MongoClient} from "./infrastructures/config/Database.js";
 import authRouter from "./presentation/routes/authRouter.js";
+import newsRouter from "./presentation/routes/newsRouter.js";
 
 class App {
     #dbClient;
@@ -25,6 +26,7 @@ class App {
         this.expressApp.use(express.json());
         this.expressApp.use(cookieParser())
         this.expressApp.use("/api", authRouter);
+        this.expressApp.use("/api", newsRouter);
     }
 
     async start() {

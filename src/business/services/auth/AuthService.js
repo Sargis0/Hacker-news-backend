@@ -23,10 +23,7 @@ class AuthService {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) throw {message: "Invalid username or password"};
 
-        const userDto = new UserDto({
-            id: user._id,
-            username: user.username
-        });
+        const userDto = new UserDto(user);
 
         const tokens = await tokenService.generate({...userDto});
         await tokenService.saveToken(user._id, tokens.refreshToken);
