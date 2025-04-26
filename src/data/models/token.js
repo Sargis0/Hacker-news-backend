@@ -10,6 +10,10 @@ const tokenSchema = new Schema({
         type: String,
         required: true,
         unique: true,
+    },
+    deviceId: {
+        type: String,
+        required: true,
     }
 }, {
     timestamps: true,
