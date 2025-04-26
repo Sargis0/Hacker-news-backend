@@ -8,13 +8,15 @@ class AuthService {
         const {username, password} = data;
 
         const existingUser = await authRepository.findUser(username);
-        if (existingUser) throw {message: "User already exist"};
+        if (existingUser) throw {message: "User already exists"};
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        return await authRepository.save({username, password: hashedPassword});
+        const newUser = await authRepository.save({username, password: hashedPassword});
+
+        return new UserDto(newUser)
     }
 
-    async login(data) {
+    async login(data, deviceId) {
         const {username, password} = data;
 
         const user = await authRepository.findUser(username);
@@ -26,7 +28,7 @@ class AuthService {
         const userDto = new UserDto(user);
 
         const tokens = await tokenService.generate({...userDto});
-        await tokenService.saveToken(user._id, tokens.refreshToken);
+        await tokenService.saveToken(user._id, tokens.refreshToken, deviceId);
         return {
             ...userDto, ...tokens
         };
@@ -36,18 +38,14 @@ class AuthService {
         return await tokenService.removeToken(refreshToken)
     }
 
-    async addEmail(id, email) {
-        const emailExists = await authRepository.emailExists(email);
-        if (email) {
-            throw {message: "Email already in use"}
-        }
-
-        const updatedUser = await authRepository.addEmail(id, email);
-        if (!updatedUser) {
-            throw {message: "User not found"};
-        }
-
-        return new UserDto(updatedUser);
+    async refreshTokens(refreshToken, deviceId) {
+        if (!refreshToken || !deviceId) throw {message: "No token or device ID provided"};
+        const userData = await tokenService.validateRefreshToken(refreshToken);
+        const tokenFromDb = await tokenService.findToken(refreshToken, deviceId);
+        if (!userData || !tokenFromDb) throw new Error("Unauthorized");
+        const tokens = await tokenService.generate({id: userData.id, username: userData.username});
+        await tokenService.saveToken(userData.id, tokens.refreshToken);
+        return tokens;
     }
 }
 

@@ -1,8 +1,8 @@
 import TokenModel from "../models/token.js";
 
 class TokenRepository {
-    async save(userId, refreshToken) {
-        const existing = await TokenModel.findOne({user: userId});
+    async save(userId, refreshToken, deviceId) {
+        const existing = await TokenModel.findOne({user: userId, deviceId});
         if (existing) {
             existing.refreshToken = refreshToken;
             return await existing.save();
@@ -10,6 +10,7 @@ class TokenRepository {
 
         return await TokenModel.create({
             user: userId,
+            deviceId,
             refreshToken
         });
     }
@@ -18,8 +19,8 @@ class TokenRepository {
         return TokenModel.deleteOne({refreshToken});
     }
 
-    async find(refreshToken) {
-        return TokenModel.findOne({refreshToken});
+    async find(refreshToken, deviceId) {
+        return TokenModel.findOne({refreshToken, deviceId});
     }
 }
 

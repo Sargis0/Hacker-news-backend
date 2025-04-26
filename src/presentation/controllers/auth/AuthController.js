@@ -1,51 +1,50 @@
 import authService from "../../../business/services/auth/AuthService.js";
-import {ResponseDto} from "../../dtos/response/ResponseDto.js";
+import {ResponseHelper} from "../../utils/ResponseHelper.js";
+import tokenService from "../../../business/services/token/TokenService.js";
+import DeviceDetector from "../../utils/DeviceDetector.js";
 
 class AuthController {
     async register(request, response) {
         try {
             const result = await authService.register(request.body);
 
-            const dto = new ResponseDto({
+            return response.status(201).json(ResponseHelper.createResponse({
                 success: true,
                 message: "User registered successfully",
-                result
-            });
-
-            return response.status(201).json(dto);
+                data: result
+            }));
         } catch (error) {
-            return response.status(500).json({
+            return response.status(500).json(ResponseHelper.createResponse({
                 success: false,
                 message: error.message
-            });
+            }));
         }
     }
 
     async login(request, response) {
         try {
-            const {id, username, accessToken, refreshToken} = await authService.login(request.body);
+            const deviceId = DeviceDetector.generateDeviceId(request);
+
+            const {id, username, accessToken, refreshToken} = await authService.login(request.body, deviceId);
+            await tokenService.saveToken(id, refreshToken, deviceId);
+
             response.cookie("refreshToken", refreshToken, {
-                maxAge: 30 * 24 * 60 * 60 * 1000,
+                maxAge: 7 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict"
             });
 
-            return response.status(200).json({
+            return response.status(200).json(ResponseHelper.createResponse({
                 success: true,
                 message: "Login successful",
-                data: {
-                    id,
-                    username,
-                    accessToken,
-                    refreshToken
-                }
-            });
+                data: {id, username, accessToken}
+            }));
         } catch (error) {
-            return response.status(400).json({
+            return response.status(400).json(ResponseHelper.createResponse({
                 success: false,
-                error: error.message
-            });
+                message: error.message
+            }));
         }
     }
 
@@ -56,41 +55,35 @@ class AuthController {
             response.clearCookie("refreshToken");
             return response.status(204).end();
         } catch (error) {
-            return response.status(500).json({
+            return response.status(500).json(ResponseHelper.createResponse({
                 success: false,
                 message: error.message
-            })
+            }));
         }
     }
 
-    async addEmail(request, response) {
+    async refreshToken(request, response) {
         try {
-            const {id} = request.params;
-            const {email} = request.body;
+            const {refreshToken} = request.cookies;
+            const deviceId = DeviceDetector.generateDeviceId(request);
+            const tokens = await authService.refreshTokens(refreshToken, deviceId);
 
-            if (!email) {
-                return response.status(400).json(
-                    new ResponseDto({
-                        success: false,
-                        message: "Email is required"
-                    })
-                );
-            }
-            let result = await authService.addEmail(id, email);
+            response.cookie("refreshToken", tokens.refreshToken, {
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict"
+            });
 
-
-            return response.status(200).json(
-                new ResponseDto({
-                    success: true,
-                    message: "Email added successfully",
-                    data: result
-                })
-            );
+            return response.status(200).json(ResponseHelper.createResponse({
+                success: true,
+                data: {accessToken: tokens.accessToken}
+            }));
         } catch (error) {
-            return response.status(500).json({
+            return response.status(500).json(ResponseHelper.createResponse({
                 success: false,
-                message: error.message
-            })
+                message: "Something went wrong"
+            }));
         }
     }
 }

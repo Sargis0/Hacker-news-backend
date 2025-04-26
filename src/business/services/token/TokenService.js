@@ -3,9 +3,9 @@ import tokenRepository from "../../../data/repositories/TokenRepository.js";
 
 class TokenService {
     async generate(payload) {
-        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN, {expiresIn: "15m"});
+        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN, {expiresIn: "1h"});
         const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_TOKEN, {expiresIn: "7d"});
-        return {accessToken, refreshToken}
+        return {accessToken, refreshToken};
     }
 
     validateAccessToken(token) {
@@ -24,16 +24,16 @@ class TokenService {
         }
     }
 
-    async saveToken(userId, refreshToken) {
-        return await tokenRepository.save(userId, refreshToken);
+    async saveToken(userId, refreshToken, deviceId) {
+        return await tokenRepository.save(userId, refreshToken, deviceId);
     }
 
     async removeToken(refreshToken) {
         return await tokenRepository.remove(refreshToken);
     }
 
-    async findToken(refreshToken) {
-        return await tokenRepository.find(refreshToken);
+    async findToken(refreshToken, deviceId) {
+        return await tokenRepository.find(refreshToken, deviceId);
     }
 }
 
