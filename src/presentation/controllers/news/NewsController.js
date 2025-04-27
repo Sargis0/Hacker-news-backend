@@ -1,47 +1,41 @@
 import newsService from "../../../business/services/news/NewsService.js";
-import {response} from "express";
-import {parse} from "dotenv";
+import {ResponseHelper} from "../../utils/ResponseHelper.js";
 
 class NewsController {
-    async create(request, response) {
+    async create(request, response, next) {
         try {
-            const newsData = request.body;
-            newsData.author = request.user.id;
+            const newsData = {
+                ...request.body,
+                author: request.user.id
+            }
+
             const result = await newsService.create(newsData);
 
-            return response.status(201).json({
+            return response.status(201).json(ResponseHelper.createResponse({
                 success: true,
-                message: "News added successfully",
-                result
-            })
+                message: "News created successfully",
+                data: result
+            }));
         } catch (error) {
-            return response.status(500).json({
-                success: false,
-                message: error.message
-            })
+            next(error)
         }
     }
 
-    async getAllPaginated(request, response) {
+    async getAllPaginated(request, response, next) {
         try {
-            const page = parseInt(request.query.page) || 1;
-            const limit = parseInt(request.query.limit) || 30;
+            const page = parseInt(request.query.page, 10) || 1;
+            const limit = parseInt(request.query.limit, 10) || 30;
 
-            const [allNews, totalCount] = await newsService.getAllPaginated(page, limit);
+            const [news, totalCount] = await newsService.getAllPaginated(page, limit);
             const totalPages = Math.ceil(totalCount / limit);
 
-            return response.status(200).json({
+            return response.status(200).json(ResponseHelper.createResponse({
                 success: true,
-                currentPage: page,
-                totalPages,
-                totalCount,
-                news: allNews
-            })
+                message: "News fetched successfully",
+                data: {totalPages, totalCount, news}
+            }));
         } catch (error) {
-            return response.status(500).json({
-                success: false,
-                message: error.message
-            })
+            next(error)
         }
     }
 }
