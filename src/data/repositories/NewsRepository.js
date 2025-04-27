@@ -12,7 +12,11 @@ class NewsRepository {
 
     async getAllPaginated(page, limit) {
         const skip = (page - 1) * limit;
-        const news = await NewsModel.find().skip(skip).limit(limit).sort({createdAt: -1});
+        const news = await NewsModel.find()
+            .skip(skip)
+            .limit(limit)
+            .sort({createdAt: -1});
+
         const totalCount = await NewsModel.countDocuments();
 
         return [news, totalCount];

@@ -1,5 +1,4 @@
 import userService from "../../../business/services/user/UserService.js";
-import {ResponseDto} from "../../dtos/response/ResponseDto.js";
 
 class UserController {
     async addEmail(request, response) {
