@@ -4,24 +4,20 @@ import tokenService from "../../../business/services/token/TokenService.js";
 import DeviceDetector from "../../utils/DeviceDetector.js";
 
 class AuthController {
-    async register(request, response) {
+    async register(request, response, next) {
         try {
             const result = await authService.register(request.body);
-
             return response.status(201).json(ResponseHelper.createResponse({
                 success: true,
                 message: "User registered successfully",
                 data: result
             }));
         } catch (error) {
-            return response.status(500).json(ResponseHelper.createResponse({
-                success: false,
-                message: error.message
-            }));
+            next(error)
         }
     }
 
-    async login(request, response) {
+    async login(request, response, next) {
         try {
             const deviceId = DeviceDetector.generateDeviceId(request);
 
@@ -41,28 +37,22 @@ class AuthController {
                 data: {id, username, accessToken}
             }));
         } catch (error) {
-            return response.status(400).json(ResponseHelper.createResponse({
-                success: false,
-                message: error.message
-            }));
+            next(error)
         }
     }
 
-    async logout(request, response) {
+    async logout(request, response, next) {
         try {
             const {refreshToken} = request.cookies;
             await authService.logout(refreshToken);
             response.clearCookie("refreshToken");
             return response.status(204).end();
         } catch (error) {
-            return response.status(500).json(ResponseHelper.createResponse({
-                success: false,
-                message: error.message
-            }));
+            next(error);
         }
     }
 
-    async refreshToken(request, response) {
+    async refreshToken(request, response, next) {
         try {
             const {refreshToken} = request.cookies;
             const deviceId = DeviceDetector.generateDeviceId(request);
@@ -80,10 +70,7 @@ class AuthController {
                 data: {accessToken: tokens.accessToken}
             }));
         } catch (error) {
-            return response.status(500).json(ResponseHelper.createResponse({
-                success: false,
-                message: "Something went wrong"
-            }));
+            next(error);
         }
     }
 }

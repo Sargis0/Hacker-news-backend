@@ -33,7 +33,6 @@ export default class AuthMiddleware {
             request.user = userData;
             next();
         } catch (error) {
-            console.error("Auth error:", error);
             return response.status(401).json({
                 success: false,
                 message: "Unauthorized access"
