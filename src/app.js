@@ -8,6 +8,7 @@ import {MongoClient} from "./infrastructures/config/Database.js";
 import authRouter from "./presentation/routes/authRouter.js";
 import newsRouter from "./presentation/routes/newsRouter.js";
 import userRouter from "./presentation/routes/userRouter.js";
+import commentRouter from "./presentation/routes/commentRouter.js";
 import {ErrorHandler} from "./presentation/middlewares/ErrorHandler.js";
 
 class App {
@@ -33,6 +34,7 @@ class App {
         this.expressApp.use("/api", authRouter);
         this.expressApp.use("/api", newsRouter);
         this.expressApp.use("/api", userRouter);
+        this.expressApp.use("/api", commentRouter);
         this.expressApp.use(ErrorHandler.handler);
     }
 
