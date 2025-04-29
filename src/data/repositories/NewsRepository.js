@@ -13,6 +13,11 @@ class NewsRepository {
     async getAllPaginated(page, limit) {
         const skip = (page - 1) * limit;
         const news = await NewsModel.find()
+            .populate({
+                path: "author",
+                select: "username",
+                model: "User"
+            })
             .skip(skip)
             .limit(limit)
             .sort({createdAt: -1});
