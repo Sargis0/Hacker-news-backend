@@ -1,4 +1,4 @@
-import commentRepository from "../../../data/repositories/CommentRepository.js";
+import commentRepository from "../../../data/repositories/comment/CommentRepository.js";
 import {CommentDto} from "../../../presentation/dtos/response/CommentDto.js";
 import {ApiError, NotFoundError} from "../../../presentation/errors/ApiError.js";
 

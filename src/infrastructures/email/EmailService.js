@@ -11,11 +11,11 @@ const transporter = nodemailer.createTransport({
 class EmailService {
     async send({to, subject, text}) {
         await transporter.sendMail({
-            from: '"HackerNews Clone" <no-reply@yourdomain.com>',
+            from: '"HackerNews Clone" <sargiskirakosyan1994s@gmail.com>',
             to,
             subject,
             text
-        })
+        });
     }
 }
 

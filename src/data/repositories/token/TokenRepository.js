@@ -1,4 +1,4 @@
-import TokenModel from "../models/token.js";
+import TokenModel from "../../models/token/token.js";
 
 class TokenRepository {
     async save(userId, refreshToken, deviceId) {

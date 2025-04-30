@@ -1,7 +1,7 @@
-import userRepository from "../../../data/repositories/UserRepository.js";
+import userRepository from "../../../data/repositories/user/UserRepository.js";
 import {UserDto} from "../../../presentation/dtos/response/UserDto.js";
 import {ApiError, NotFoundError} from "../../../presentation/errors/ApiError.js";
-import emailService from "../../../infrastructures/EmailService.js";
+import emailService from "../../../infrastructures/email/EmailService.js";
 import crypto from "crypto";
 
 class UserService {

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import tokenRepository from "../../../data/repositories/TokenRepository.js";
+import tokenRepository from "../../../data/repositories/token/TokenRepository.js";
 
 class TokenService {
     async generate(payload) {

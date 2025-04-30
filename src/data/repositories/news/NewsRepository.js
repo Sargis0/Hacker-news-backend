@@ -1,5 +1,5 @@
-import NewsModel from "../models/news.js";
-import authRepository from "./AuthRepository.js";
+import NewsModel from "../../models/news/news.js";
+import authRepository from "../auth/AuthRepository.js";
 
 class NewsRepository {
     async save(newsData) {

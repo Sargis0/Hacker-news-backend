@@ -1,4 +1,4 @@
-import UserModel from "../models/user.js";
+import UserModel from "../../models/user/user.js";
 
 class UserRepository {
     async save(data) {
@@ -6,7 +6,7 @@ class UserRepository {
     }
 
     async findUser(username) {
-        return UserModel.findOne({ username });
+        return UserModel.findOne({username});
     }
 
     async findUserById(userId) {
@@ -14,18 +14,18 @@ class UserRepository {
     }
 
     async findByEmail(email) {
-        return UserModel.findOne({ email });
+        return UserModel.findOne({email});
     }
 
     async findByResetToken(token) {
         return UserModel.findOne({
             passwordResetToken: token,
-            passwordResetExpires: { $gt: Date.now() }
+            passwordResetExpires: {$gt: Date.now()}
         });
     }
 
     async updateUser(userId, updateData) {
-        return UserModel.findByIdAndUpdate(userId, updateData, { new: true });
+        return UserModel.findByIdAndUpdate(userId, updateData, {new: true});
     }
 
     async getUserProfile(userId) {

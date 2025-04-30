@@ -1,4 +1,4 @@
-import newsRepository from "../../../data/repositories/NewsRepository.js";
+import newsRepository from "../../../data/repositories/news/NewsRepository.js";
 import {NewsDto} from "../../../presentation/dtos/response/NewsDto.js";
 import {ApiError, NotFoundError} from "../../../presentation/errors/ApiError.js";
 

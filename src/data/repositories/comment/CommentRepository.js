@@ -1,4 +1,4 @@
-import CommentModel from "../models/comment.js"
+import CommentModel from "../../models/comment/comment.js"
 
 class CommentRepository {
     async save(commentData) {
