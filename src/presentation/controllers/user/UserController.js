@@ -1,34 +1,43 @@
 import userService from "../../../business/services/user/UserService.js";
+import {ResponseHelper} from "../../utils/ResponseHelper.js";
 
 class UserController {
-    async addEmail(request, response) {
+    async updateEmail(request, response, next) {
         try {
-            const id = request.user.id;
-            const {email} = request.body;
-            await userService.addEmail(id, email);
-
-            return response.status(200).json({
+            const {newEmail} = request.body;
+            const result = await userService.updateEmail(request.user.id, newEmail);
+            response.status(200).json(ResponseHelper.createResponse({
                 success: true,
-                message: "mail added successfully"
-            });
+                data: result
+            }));
         } catch (error) {
-            return response.status(500).json({
-                success: false,
-                message: error.message
-            })
+            next(error);
         }
     }
 
-    async about(request, response) {
+    async requestPasswordReset(request, response, next) {
         try {
-            const id = request.user.id;
-            console.log(request.body);
-            let result = await userService.about(id, request.body)
+            const {email} = request.body;
+            await userService.requestPasswordReset(email);
+            response.status(200).json(ResponseHelper.createResponse({
+                success: true,
+                message: "Reset link sent to your email"
+            }));
         } catch (error) {
-            return response.status(500).jsonp({
-                success: false,
-                message: error.message
-            })
+            next(error);
+        }
+    }
+
+    async confirmPasswordReset(request, response, next) {
+        try {
+            const {token, newPassword} = request.body;
+            await userService.resetPassword(token, newPassword);
+            response.status(200).json(ResponseHelper.createResponse({
+                success: true,
+                message: "Password updated successfully"
+            }));
+        } catch (error) {
+            next(error);
         }
     }
 }

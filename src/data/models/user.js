@@ -15,7 +15,17 @@ const userSchema = new Schema({
     email: {
         type: String,
         unique: true,
-        trim: true
+        trim: true,
+        lowercase: true,
+        sparse: true
+    },
+    passwordResetToken: {
+        type: String,
+        default: null
+    },
+    passwordResetExpires: {
+        type: Date,
+        default: null
     },
     about: {
         type: String,

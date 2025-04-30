@@ -9,6 +9,9 @@ class NewsController {
                 author: request.user.id
             }
 
+            console.log(newsData)
+
+
             const result = await newsService.create(newsData);
 
             return response.status(201).json(ResponseHelper.createResponse({

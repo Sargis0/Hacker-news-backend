@@ -27,7 +27,6 @@ class App {
             methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
             credentials: true,
             allowedHeaders: ["Content-Type", "Authorization"]
-
         }));
         this.expressApp.use(express.json());
         this.expressApp.use(cookieParser())
