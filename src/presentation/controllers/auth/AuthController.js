@@ -37,7 +37,7 @@ class AuthController {
                 data: {id, username, accessToken}
             }));
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 

@@ -9,13 +9,13 @@ export class ApiError extends Error {
 export class NotFoundError extends ApiError {
     constructor(message = "Resource not found") {
         super(message, 404);
-        this.name = this.constructor.name
+        this.name = this.constructor.name;
     }
 }
 
 export class BadRequestError extends ApiError {
     constructor(message = "Bad request") {
         super(message, 400);
-        this.name = this.constructor.name
+        this.name = this.constructor.name;
     }
 }

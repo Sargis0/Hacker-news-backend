@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import authRepository from "../../../data/repositories/AuthRepository.js";
+import authRepository from "../../../data/repositories/auth/AuthRepository.js";
 import tokenService from "../token/TokenService.js";
 import {UserDto} from "../../../presentation/dtos/response/UserDto.js";
 import {ApiError, BadRequestError} from "../../../presentation/errors/ApiError.js";

@@ -49,6 +49,7 @@ class CommentController {
                 request.user.id,
                 request.body.text
             );
+
             response.status(200).json(ResponseHelper.createResponse({
                 success: true,
                 data: result

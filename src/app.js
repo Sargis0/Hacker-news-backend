@@ -5,11 +5,12 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import {MongoClient} from "./infrastructures/config/Database.js";
+import {ErrorHandler} from "./presentation/middlewares/ErrorHandler.js";
+
 import authRouter from "./presentation/routes/authRouter.js";
 import newsRouter from "./presentation/routes/newsRouter.js";
 import userRouter from "./presentation/routes/userRouter.js";
 import commentRouter from "./presentation/routes/commentRouter.js";
-import {ErrorHandler} from "./presentation/middlewares/ErrorHandler.js";
 
 class App {
     #dbClient;
