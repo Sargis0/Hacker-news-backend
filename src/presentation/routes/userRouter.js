@@ -7,9 +7,10 @@ const userRouter = Router();
 userRouter.patch(
     "/user/email",
     AuthMiddleware.authenticate,
-    userController.addEmail
+    userController.updateEmail
 );
 
-userRouter.patch("/user/about", AuthMiddleware.authenticate, userController.about)
+userRouter.post("/user/password/reset-request", userController.requestPasswordReset);
+userRouter.post("/user/password/reset-confirm", userController.confirmPasswordReset);
 
 export default userRouter;

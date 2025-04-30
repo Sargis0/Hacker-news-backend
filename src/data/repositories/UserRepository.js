@@ -1,24 +1,35 @@
 import UserModel from "../models/user.js";
 
 class UserRepository {
-    async addEmail(id, email) {
-        return UserModel.findOneAndUpdate(
-            {_id: id},
-            {$set: {email}},
-            {new: true, runValidators: true}
-        ).select("-password -refreshToken")
+    async save(data) {
+        return await UserModel.create(data);
     }
 
-    async emailExists(email) {
-        return UserModel.findOne({email});
+    async findUser(username) {
+        return UserModel.findOne({ username });
     }
 
-    async findUser(userId) {
-        return UserModel.findById(userId)
+    async findUserById(userId) {
+        return UserModel.findById(userId);
     }
 
-    async about(data) {
+    async findByEmail(email) {
+        return UserModel.findOne({ email });
+    }
 
+    async findByResetToken(token) {
+        return UserModel.findOne({
+            passwordResetToken: token,
+            passwordResetExpires: { $gt: Date.now() }
+        });
+    }
+
+    async updateUser(userId, updateData) {
+        return UserModel.findByIdAndUpdate(userId, updateData, { new: true });
+    }
+
+    async getUserProfile(userId) {
+        return UserModel.findById(userId).select('-password -passwordResetToken');
     }
 }
 
