@@ -27,8 +27,14 @@ class App {
             origin: ["http://localhost:5173"],
             methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
             credentials: true,
-            allowedHeaders: ["Content-Type", "Authorization"]
+            allowedHeaders: ["Content-Type", "Authorization"],
+            exposedHeaders: ["set-cookie"]
         }));
+
+        this.expressApp.get("/health", (req, res) => {
+            res.status(200).json({ status: "OK" });
+        });
+
         this.expressApp.use(express.json());
         this.expressApp.use(cookieParser())
         this.expressApp.use("/api", authRouter);

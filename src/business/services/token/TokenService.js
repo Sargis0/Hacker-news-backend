@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import tokenRepository from "../../../data/repositories/token/TokenRepository.js";
 
 class TokenService {
     async generate(payload) {
@@ -10,7 +9,10 @@ class TokenService {
 
     validateAccessToken(token) {
         try {
-            return jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
+            return jwt.verify(token, process.env.JWT_ACCESS_TOKEN, {
+                clockTolerance: 30,
+                ignoreExpiration: false
+            });
         } catch {
             return null;
         }
@@ -36,5 +38,7 @@ class TokenService {
         return await tokenRepository.find(refreshToken, deviceId);
     }
 }
+
+import tokenRepository from "../../../data/repositories/token/TokenRepository.js";
 
 export default new TokenService();
