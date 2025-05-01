@@ -1,42 +1,32 @@
 import tokenService from "../../business/services/token/TokenService.js";
+import {ApiError} from "../errors/ApiError.js";
+import authRepository from "../../data/repositories/auth/AuthRepository.js"
 
 export default class AuthMiddleware {
-    static authenticate(request, response, next) {
+    static async authenticate(request, response, next) {
         try {
             const authHeader = request.header("Authorization");
 
-            if (!authHeader || !authHeader.startsWith("Bearer ")) {
-                return response.status(401).json({
-                    success: false,
-                    message: "Access denied. No token provided"
-                });
+            if (!authHeader?.startsWith("Bearer ")) {
+                throw new ApiError("Unauthorized", 401);
             }
 
             const token = authHeader.split(" ")[1];
-
-            if (!token) {
-                return response.status(401).json({
-                    success: false,
-                    message: "Access token missing"
-                });
-            }
-
             const userData = tokenService.validateAccessToken(token);
 
             if (!userData) {
-                return response.status(401).json({
-                    success: false,
-                    message: "Invalid or expired token"
-                });
+                throw new ApiError("Invalid token", 401);
+            }
+
+            const user = await authRepository.findUserById(userData.id);
+            if (!user) {
+                throw new ApiError("User not found", 404);
             }
 
             request.user = userData;
             next();
         } catch (error) {
-            return response.status(401).json({
-                success: false,
-                message: "Unauthorized access"
-            });
+            next(error);
         }
     }
 }

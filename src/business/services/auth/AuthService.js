@@ -47,15 +47,27 @@ class AuthService {
 
     async refreshTokens(refreshToken, deviceId) {
         if (!refreshToken || !deviceId) {
-            throw new BadRequestError("No token or device ID provided");
+            throw new BadRequestError("Invalid request");
         }
+
         const userData = await tokenService.validateRefreshToken(refreshToken);
         const tokenFromDb = await tokenService.findToken(refreshToken, deviceId);
 
         if (!userData || !tokenFromDb) {
-            throw new ApiError("Authorization", 401);
+            throw new ApiError("Invalid refresh token", 401, {
+                clearCookie: true
+            });
         }
-        const tokens = await tokenService.generate({id: userData.id, username: userData.username});
+
+        if (userData.deviceId !== deviceId) {
+            await tokenService.removeToken(refreshToken);
+            throw new ApiError("Device mismatch", 403);
+        }
+
+        const tokens = await tokenService.generate(
+            {id: userData.id, username: userData.username},
+            deviceId
+        );
         await tokenService.saveToken(userData.id, tokens.refreshToken);
         return tokens;
     }
